@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Protected</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&display=swap"
+        rel="stylesheet">
+    <link rel="icon" type="image/jpeg" href="engagement-photo.jpg">
+</head>
+<script>
+    const SITE_CONTENT = "<!-- ENCRYPTED_CONTENT -->"
+    const IV = new TextEncoder().encode("wedding-website-random-iv");
+
+    async function attemptDecryption(password) {
+        try {
+            // Attempt decryption
+            const decryptedContent = await window.crypto.subtle.decrypt(
+                {
+                    name: "AES-GCM",
+                    iv: IV, // Initialization vector
+                    additionalData: new TextEncoder().encode("Additional data used to verify decryption")
+                },
+                await crypto.subtle.importKey(
+                    "raw",
+                    await crypto.subtle.digest("SHA-256", new TextEncoder().encode(password)),
+                    "AES-GCM",
+                    false,
+                    ["decrypt"]
+                ),
+                Uint8Array.from(atob(SITE_CONTENT), (c) => c.charCodeAt(0))
+            )
+            const decryptedText = new TextDecoder().decode(decryptedContent);
+            document.open()
+            document.write(decryptedText);
+            document.close();
+        } catch (error) {
+            console.error("Decryption failed:", error);
+            localStorage.removeItem("site_password");
+            document.getElementById("incorrect-password").style.opacity = 1;
+        }
+    }
+
+    // Check to see if we've saved a password
+    if (localStorage.getItem("site_password")) {
+        attemptDecryption(localStorage.getItem("site_password"));
+    }
+
+    function onPasswordSubmit() {
+        const passwordInput = document.querySelector("#site-password input");
+        const password = passwordInput.value.trim().toLowerCase();
+        if (password) {
+            localStorage.setItem("site_password", password);
+            attemptDecryption(password);
+        }
+        passwordInput.value = "";
+    }
+</script>
+
+<style>
+    body {
+        background-color: #4d5e54;
+        color: #ffffff;
+
+        font-family: "Cormorant Garamond", serif;
+        font-optical-sizing: auto;
+        font-weight: 400;
+        font-style: normal;
+    }
+
+    #engagement-photo {
+        width: 24rem;
+        height: 24rem;
+        border-radius: 50%;
+        background: url('engagement-photo.jpg') no-repeat center center;
+        background-size: 150%;
+        background-position: 20% 50%;
+        background-repeat: no-repeat;
+        margin-bottom: 0.5rem;
+    }
+
+    #main {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        align-items: center;
+        margin-top: 8rem;
+        gap: 1rem;
+    }
+
+    #site-password {
+        position: relative;
+        display: flex;
+        min-width: 18rem;
+    }
+
+    #site-password input {
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+        border: none;
+        flex: 1;
+        left: 0;
+        top: 0;
+        bottom: 0;
+    }
+
+    #site-password button {
+        padding: 0.5rem;
+        border-radius: 0 0.5rem 0.5rem 0;
+        color: #555;
+        cursor: pointer;
+        border: none;
+        background: none;
+        position: absolute;
+        background: #fff;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #incorrect-password {
+        color: #6c1212;
+        background-color: #ffd8d8;
+        border-radius: 0.5rem;
+        padding: 0.2rem 0.8rem;
+        opacity: 0;
+        /* display: none; */
+    }
+</style>
+
+<body>
+    <section id="main">
+        <div id="engagement-photo" alt="Engagement Photo"></div>
+        <div id="incorrect-password">Sorry, that password is incorrect</div>
+        <div id="site-password">
+            <input type="password" onkeydown="if(event.key === 'Enter'){onPasswordSubmit()}" placeholder="This page is password protected">
+            <button onclick="onPasswordSubmit()"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" style="width: 1rem; height: 1rem;">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                </svg>
+            </button>
+        </div>
+        <div>You can find the password on your save the date.<br>Contact Nathan at <span style="font-family: monospace; font-weight: 400">expitau@gmail.com</span> if you are having
+            problems</div>
+    </section>
+</body>
+
+</html>
