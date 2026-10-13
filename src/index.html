@@ -62,6 +62,9 @@
 </script>
 
 <style>
+    html { 
+        --engagement-photo-1-url: url('<!-- ENGAGEMENT_PHOTO_1_URL -->');
+    }
     body {
         background-color: #4d5e54;
         color: #ffffff;
@@ -75,12 +78,17 @@
     #engagement-photo {
         width: 24rem;
         height: 24rem;
+        position: relative;
+        filter: drop-shadow(3px 3px 3px rgba(0, 0, 0, 0.25));
+    }
+
+    #engagement-photo::before {
+        background-image: var(--engagement-photo-1-url);
+        background-size: cover;
+        content: "";
+        position: absolute;
+        inset: 0;
         border-radius: 50%;
-        background: url('engagement-photo.jpg') no-repeat center center;
-        background-size: 150%;
-        background-position: 20% 50%;
-        background-repeat: no-repeat;
-        margin-bottom: 0.5rem;
     }
 
     #main {
@@ -137,7 +145,7 @@
 
 <body>
     <section id="main">
-        <div id="engagement-photo" alt="Engagement Photo"></div>
+        <div id="engagement-photo" alt="Photo of Miso & Soup with engagement ring" title="Engagement Photo"></div>
         <div id="incorrect-password">Sorry, that password is incorrect</div>
         <div id="site-password">
             <input type="password" onkeydown="if(event.key === 'Enter'){onPasswordSubmit()}" placeholder="This page is password protected">

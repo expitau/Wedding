@@ -2,6 +2,16 @@
 
 const password = (await Bun.file("private/encryption_password").text()).trim().toLowerCase();
 
+async function inline(private_html: string, key: string, filepath: string): Promise<string> {
+    const fileBuffer = await Bun.file(filepath).arrayBuffer();
+    const fileBase64 = btoa(String.fromCharCode(...new Uint8Array(fileBuffer)));
+    // If the key does not exist
+    if (!private_html.includes(`<!-- ${key} -->`)) {
+        console.warn(`Warning: Key ${key} not found in private HTML.`);
+    }
+    return private_html.replaceAll(`<!-- ${key} -->`, `data:image/jpeg;base64,${fileBase64}`);
+}
+
 async function encryptContent(content: string, password: string): Promise<string> {
     const encrypted = await crypto.subtle.encrypt(
         {
@@ -18,26 +28,22 @@ async function encryptContent(content: string, password: string): Promise<string
         ),
         new TextEncoder().encode(content)
     );
-    const encryptedBase64 = btoa(String.fromCharCode(...new Uint8Array(encrypted)));
+    const encryptedBase64 = Buffer.from(encrypted).toString("base64");;
     return encryptedBase64;
 }
 
 let private_html = await Bun.file("private/index.html").text();
 
 // First, transform private_html by inlining images
-const venue_photo = await Bun.file("private/venue_photo.jpeg").arrayBuffer();
-const venue_photo_base64 = btoa(String.fromCharCode(...new Uint8Array(venue_photo)));
-private_html = private_html.replace("<!-- VENUE_IMAGE_URL -->", `data:image/jpeg;base64,${venue_photo_base64}`);
+private_html = await inline(private_html, "VENUE_IMAGE_URL", "private/venue_photo.jpeg");
+private_html = await inline(private_html, "ENGAGEMENT_PHOTO_1_URL", "private/engagement-photo-1.jpeg");
+private_html = await inline(private_html, "ENGAGEMENT_PHOTO_2_URL", "private/engagement-photo-2.jpeg");
 
 // Then, encrypt the transformed private_html
 const encrypted_private_html = await encryptContent(private_html, password);
 
 // Insert the encrypted private HTML into the public index.html content
-const publicContent = await Bun.file("src/index.html").text();
-const updatedContent = publicContent.replace("<!-- ENCRYPTED_CONTENT -->", encrypted_private_html);
-await Bun.write("dist/web/index.html", updatedContent);
-
-const files_to_copy = ["engagement-photo.jpg"];
-for (const file of files_to_copy) {
-    await Bun.write(`dist/web/${file}`, await Bun.file(`src/${file}`).arrayBuffer());
-}
+let publicContent = await Bun.file("src/index.html").text();
+publicContent = publicContent.replace("<!-- ENCRYPTED_CONTENT -->", encrypted_private_html);
+publicContent = await inline(publicContent, "ENGAGEMENT_PHOTO_1_URL", "private/engagement-photo-1.jpeg");
+await Bun.write("dist/web/index.html", publicContent);
