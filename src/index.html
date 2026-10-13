@@ -21,6 +21,13 @@
     const SITE_CONTENT = "<!-- ENCRYPTED_CONTENT -->"
     const IV = new TextEncoder().encode("wedding-website-random-iv");
 
+    function showIncorrectPassword() {
+        document.querySelector("#site-password input").style.outline = "#9c3d2a 2px solid";
+        document.querySelector("#site-password input").style.outlineOffset = "-2px";
+        document.querySelector("#site-password input").style.backgroundColor = "#9c3d2a11";
+        document.querySelector("#incorrect-password").style.display = "block";
+    }
+
     async function attemptDecryption(password) {
         try {
             // Attempt decryption
@@ -46,7 +53,7 @@
         } catch (error) {
             console.error("Decryption failed:", error);
             localStorage.removeItem("site_password");
-            document.getElementById("incorrect-password").style.opacity = 1;
+            showIncorrectPassword();
         }
     }
 
@@ -63,6 +70,7 @@
             attemptDecryption(password);
         }
         passwordInput.value = "";
+        passwordInput.focus();
     }
 </script>
 
@@ -82,59 +90,62 @@
         font-weight: 300;
         font-size: 3rem;
         margin: 0;
+        line-height: 0.8;
+    }
+
+    p {
+        font-size: small;
+        margin: 0;
     }
 
     section#main {
         display: flex;
         justify-content: center;
         align-items: center;
-        padding-top: 10%;
+        padding-top: 25vh;
     }
 
     #site-password {
         background-color: #ffffff;
-        color: #222222;
+        color: #4d5e54;
         padding: 4rem;
         display: flex;
         flex-direction: column;
-        align-items: center;
         border-radius: 1rem;
         filter: drop-shadow(10px 10px 10px rgba(0, 0, 0, 0.25));
         gap: 1rem;
     }
 
     #site-password input {
-        border-radius: 1rem 0 0 1rem;
+        border-radius: 1rem;
         border: none;
         box-sizing: border-box;
         outline-offset: -1px;
         outline: #999999 1px solid;
-        padding: 0.5rem 1rem;
+        padding: 1rem;
         min-width: 18rem;
     }
 
-    #password-input {
-        border-radius: 1rem;
-        display: flex;
-        flex-direction: row;
-    }
-
-    #password-input:focus-within {
+    #site-password input:focus {
         outline-offset: -2px;
         outline: #709073 2px solid;
     }
 
     #site-password button {
-        background-color: #709073;
+        background-color: #4d5e54;
         color: #ffffff;
         border: none;
-        width: 2rem;
-        height: 2rem;
-        border-radius: 0 1rem 1rem 0;
+        padding: 1rem;
+        border-radius: 1rem;
         cursor: pointer;
         display: flex;
         justify-content: center;
         align-items: center;
+    }
+
+    #site-password a {
+        color: unset;
+        text-decoration: underline;
     }
 </style>
 
@@ -143,16 +154,13 @@
         <div id="site-password">
             <h1>Welcome.</h1>
             <p>Please enter the password to from your invitation</p>
-            <div id="password-input">
-                <input type="password" onkeydown="if(event.key === 'Enter'){onPasswordSubmit()}"
-                    placeholder="This page is password protected">
-                <button onclick="onPasswordSubmit()"><svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 1rem; height: 1rem;">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                    </svg>
-                </button>
-            </div>
-            <div style="font-size: small">Contact Nathan at expitau@gmail.com if you are having problems</div>
+            <br>
+            <p style="font-weight: bold; font-size: smaller; margin-bottom: -0.5rem">Password</p>
+            <input type="password" onkeydown="if(event.key === 'Enter'){onPasswordSubmit()}"
+                placeholder="This page is password protected">
+            <p id="incorrect-password" style="color: #9c3d2a; display: none; margin: 0; margin-top: -0.5rem; font-size: smaller;">Incorrect password. Please try again.</p>
+            <button onclick="onPasswordSubmit()">Continue </button>
+            <p>Contact Nathan at <a href="mailto:expitau@gmail.com">expitau@gmail.com</a> if you are having problems</p>
         </div>
     </section>
 </body>

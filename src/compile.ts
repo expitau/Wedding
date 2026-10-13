@@ -45,5 +45,5 @@ const encrypted_private_html = await encryptContent(private_html, password);
 // Insert the encrypted private HTML into the public index.html content
 let publicContent = await Bun.file("src/index.html").text();
 publicContent = publicContent.replace("<!-- ENCRYPTED_CONTENT -->", encrypted_private_html);
-publicContent = await inline(publicContent, "ENGAGEMENT_PHOTO_1_URL", "private/engagement-photo-1.jpeg");
+// publicContent = await inline(publicContent, "ENGAGEMENT_PHOTO_1_URL", "private/engagement-photo-1.jpeg");
 await Bun.write("dist/web/index.html", publicContent);
