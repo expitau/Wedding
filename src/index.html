@@ -10,6 +10,11 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&display=swap"
         rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Charm:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+        rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+        rel="stylesheet">
     <link rel="icon" type="image/jpeg" href="engagement-photo.jpg">
 </head>
 <script>
@@ -62,101 +67,93 @@
 </script>
 
 <style>
-    html { 
-        --engagement-photo-1-url: url('<!-- ENGAGEMENT_PHOTO_1_URL -->');
-    }
     body {
         background-color: #4d5e54;
         color: #ffffff;
 
-        font-family: "Cormorant Garamond", serif;
+        font-family: "Inter", sans-serif;
         font-optical-sizing: auto;
         font-weight: 400;
         font-style: normal;
     }
 
-    #engagement-photo {
-        width: 24rem;
-        height: 24rem;
-        position: relative;
-        filter: drop-shadow(3px 3px 3px rgba(0, 0, 0, 0.25));
+    h1 {
+        font-family: "Charm", serif;
+        font-weight: 300;
+        font-size: 3rem;
+        margin: 0;
     }
 
-    #engagement-photo::before {
-        background-image: var(--engagement-photo-1-url);
-        background-size: cover;
-        content: "";
-        position: absolute;
-        inset: 0;
-        border-radius: 50%;
-    }
-
-    #main {
-        display: flex;
-        flex-direction: column;
-        text-align: center;
-        align-items: center;
-        margin-top: 8rem;
-        gap: 1rem;
-    }
-
-    #site-password {
-        position: relative;
-        display: flex;
-        min-width: 18rem;
-    }
-
-    #site-password input {
-        padding: 0.5rem;
-        border-radius: 0.5rem;
-        border: none;
-        flex: 1;
-        left: 0;
-        top: 0;
-        bottom: 0;
-    }
-
-    #site-password button {
-        padding: 0.5rem;
-        border-radius: 0 0.5rem 0.5rem 0;
-        color: #555;
-        cursor: pointer;
-        border: none;
-        background: none;
-        position: absolute;
-        background: #fff;
-        top: 0;
-        bottom: 0;
-        right: 0;
+    section#main {
         display: flex;
         justify-content: center;
         align-items: center;
+        padding-top: 10%;
     }
 
-    #incorrect-password {
-        color: #6c1212;
-        background-color: #ffd8d8;
-        border-radius: 0.5rem;
-        padding: 0.2rem 0.8rem;
-        opacity: 0;
-        /* display: none; */
+    #site-password {
+        background-color: #ffffff;
+        color: #222222;
+        padding: 4rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border-radius: 1rem;
+        filter: drop-shadow(10px 10px 10px rgba(0, 0, 0, 0.25));
+        gap: 1rem;
+    }
+
+    #site-password input {
+        border-radius: 1rem 0 0 1rem;
+        border: none;
+        box-sizing: border-box;
+        outline-offset: -1px;
+        outline: #999999 1px solid;
+        padding: 0.5rem 1rem;
+        min-width: 18rem;
+    }
+
+    #password-input {
+        border-radius: 1rem;
+        display: flex;
+        flex-direction: row;
+    }
+
+    #password-input:focus-within {
+        outline-offset: -2px;
+        outline: #709073 2px solid;
+    }
+
+    #site-password button {
+        background-color: #709073;
+        color: #ffffff;
+        border: none;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 0 1rem 1rem 0;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 </style>
 
 <body>
     <section id="main">
-        <div id="engagement-photo" alt="Photo of Miso & Soup with engagement ring" title="Engagement Photo"></div>
-        <div id="incorrect-password">Sorry, that password is incorrect</div>
         <div id="site-password">
-            <input type="password" onkeydown="if(event.key === 'Enter'){onPasswordSubmit()}" placeholder="This page is password protected">
-            <button onclick="onPasswordSubmit()"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" style="width: 1rem; height: 1rem;">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                </svg>
-            </button>
+            <h1>Welcome.</h1>
+            <p>Please enter the password to from your invitation</p>
+            <div id="password-input">
+                <input type="password" onkeydown="if(event.key === 'Enter'){onPasswordSubmit()}"
+                    placeholder="This page is password protected">
+                <button onclick="onPasswordSubmit()"><svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 1rem; height: 1rem;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                    </svg>
+                </button>
+            </div>
+            <div style="font-size: small">Contact Nathan at expitau@gmail.com if you are having problems</div>
         </div>
-        <div>You can find the password on your save the date.<br>Contact Nathan at <span style="font-family: monospace; font-weight: 400">expitau@gmail.com</span> if you are having
-            problems</div>
     </section>
 </body>
 
