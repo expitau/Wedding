@@ -47,6 +47,7 @@
                 Uint8Array.from(atob(SITE_CONTENT), (c) => c.charCodeAt(0))
             )
             const decryptedText = new TextDecoder().decode(decryptedContent);
+            await document.fonts.ready;
             document.open()
             document.write(decryptedText);
             document.close();
