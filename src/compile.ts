@@ -1,5 +1,5 @@
 // Take private/index.html, encrypt it, insert as a blob in src/index.html, and save to dist/
-import { readdir } from "node:fs/promises";
+import { readdir, rm } from "node:fs/promises";
 
 const password = (await Bun.file("private/encryption_password").text()).trim().toLowerCase();
 
@@ -48,6 +48,9 @@ let publicContent = await Bun.file("src/index.html").text();
 publicContent = publicContent.replace("<!-- ENCRYPTED_CONTENT -->", encrypted_private_html);
 // publicContent = await inline(publicContent, "ENGAGEMENT_PHOTO_1_URL", "private/engagement-photo-1.jpeg");
 await Bun.write("dist/web/index.html", publicContent);
+
+// First remove everything in private enc
+await rm("private_enc", { recursive: true });
 
 for (const file of await readdir("private")) {
     await Bun.write(`private_enc/${file}`, await encryptContent(await Bun.file(`private/${file}`).text(), password));
